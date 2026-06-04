@@ -52,7 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/static/**","/index.html","/favicon.ico","/avatar.jpg").permitAll()
                 .antMatchers("/api/callback","/api/processCallback","/api/registry","/api/registryRemove").permitAll()
-                .antMatchers("/doc.html","/swagger-resources/**","/webjars/**","/*/api-docs").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))

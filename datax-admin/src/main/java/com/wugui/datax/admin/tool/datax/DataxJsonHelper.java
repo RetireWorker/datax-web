@@ -127,6 +127,9 @@ public class DataxJsonHelper implements DataxJsonInterface {
         } else if (MONGODB.equals(datasource)) {
             readerPlugin = new MongoDBReader();
             buildReader = buildMongoDBReader();
+        } else if (DM.equals(datasource)) {
+            readerPlugin = new RdbmsReader();
+            buildReader = buildReader();
         }
     }
 
@@ -165,6 +168,9 @@ public class DataxJsonHelper implements DataxJsonInterface {
         } else if (JdbcConstants.MONGODB.equals(datasource)) {
             writerPlugin = new MongoDBWriter();
             buildWriter = this.buildMongoDBWriter();
+        } else if (DM.equals(datasource)) {
+            writerPlugin = new RdbmsWriter();
+            buildWriter = this.buildWriter();
         }
     }
 

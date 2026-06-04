@@ -92,6 +92,10 @@ logging:
 
 
 
+# swagger api docs (set to false in production)
+swagger:
+  enable: ${SWAGGER_ENABLE:true}
+
 #datax-job, access token
 datax:
   job:

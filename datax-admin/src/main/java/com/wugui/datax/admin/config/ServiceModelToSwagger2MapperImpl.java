@@ -6,8 +6,10 @@ import io.swagger.models.parameters.Parameter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import springfox.documentation.service.ApiInfo;
@@ -26,6 +28,8 @@ import static com.google.common.collect.Maps.newTreeMap;
 @Component(value = "ServiceModelToSwagger2Mapper")
 @Primary
 @ConditionalOnWebApplication
+@Profile("!prod")
+@ConditionalOnProperty(name = "swagger.enable", havingValue = "true", matchIfMissing = true)
 public class ServiceModelToSwagger2MapperImpl extends ServiceModelToSwagger2Mapper {
 
 
