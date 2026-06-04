@@ -1,14 +1,13 @@
 package com.wugui.datax.admin.service;
 
 
-import com.wugui.datatx.core.biz.model.ReturnT;
-import com.wugui.datax.admin.dto.DataXBatchJsonBuildDto;
-import com.wugui.datax.admin.dto.TaskScheduleDto;
-import com.wugui.datax.admin.entity.JobInfo;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import com.wugui.datatx.core.biz.model.ReturnT;
+import com.wugui.datax.admin.dto.DataXBatchJsonBuildDto;
+import com.wugui.datax.admin.entity.JobInfo;
 
 /**
  * core job action for datax-web
@@ -93,4 +92,18 @@ public interface JobService {
      * @return
      */
     ReturnT<String> batchAdd(DataXBatchJsonBuildDto dto) throws IOException;
+
+    /**
+     * 批量启动任务
+     * @param ids 任务ID列表
+     * @return
+     */
+    ReturnT<String> batchStart(List<Integer> ids);
+
+    /**
+     * 批量删除任务
+     * @param ids 任务ID列表
+     * @return
+     */
+    ReturnT<String> batchRemove(List<Integer> ids);
 }

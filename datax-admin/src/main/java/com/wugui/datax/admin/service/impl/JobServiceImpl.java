@@ -1,5 +1,18 @@
 package com.wugui.datax.admin.service.impl;
 
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
 import com.wugui.datatx.core.biz.model.ReturnT;
 import com.wugui.datatx.core.enums.ExecutorBlockStrategyEnum;
 import com.wugui.datatx.core.glue.GlueTypeEnum;
@@ -14,22 +27,22 @@ import com.wugui.datax.admin.entity.JobGroup;
 import com.wugui.datax.admin.entity.JobInfo;
 import com.wugui.datax.admin.entity.JobLogReport;
 import com.wugui.datax.admin.entity.JobTemplate;
-import com.wugui.datax.admin.mapper.*;
+import com.wugui.datax.admin.mapper.JobGroupMapper;
+import com.wugui.datax.admin.mapper.JobInfoMapper;
+import com.wugui.datax.admin.mapper.JobLogGlueMapper;
+import com.wugui.datax.admin.mapper.JobLogMapper;
+import com.wugui.datax.admin.mapper.JobLogReportMapper;
+import com.wugui.datax.admin.mapper.JobTemplateMapper;
 import com.wugui.datax.admin.service.DatasourceQueryService;
 import com.wugui.datax.admin.service.DataxJsonService;
 import com.wugui.datax.admin.service.JobService;
 import com.wugui.datax.admin.util.DateFormatUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.util.*;
 
 /**
  * core job action for xxl-job
@@ -404,6 +417,60 @@ public class JobServiceImpl implements JobService {
         return new ReturnT<>(result);
     }
 
+
+    @Override
+    public ReturnT<String> batchStart(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("system_please_choose") + I18nUtil.getString("jobinfo_field_id"));
+        }
+
+        int successCount = 0;
+        int failCount = 0;
+        StringBuilder failMsg = new StringBuilder();
+
+        for (Integer id : ids) {
+            ReturnT<String> result = start(id);
+            if (ReturnT.SUCCESS_CODE == result.getCode()) {
+                successCount++;
+            } else {
+                failCount++;
+                failMsg.append(I18nUtil.getString("jobinfo_field_id")).append("(").append(id).append(")：").append(result.getMsg()).append("；");
+            }
+        }
+
+        String resultMsg = String.format("批量启动完成，成功：%d，失败：%d", successCount, failCount);
+        if (failCount > 0) {
+            resultMsg += "，失败详情：" + failMsg.toString();
+        }
+        return new ReturnT<>(ReturnT.SUCCESS_CODE, resultMsg);
+    }
+
+    @Override
+    public ReturnT<String> batchRemove(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("system_please_choose") + I18nUtil.getString("jobinfo_field_id"));
+        }
+
+        int successCount = 0;
+        int failCount = 0;
+        StringBuilder failMsg = new StringBuilder();
+
+        for (Integer id : ids) {
+            ReturnT<String> result = remove(id);
+            if (ReturnT.SUCCESS_CODE == result.getCode()) {
+                successCount++;
+            } else {
+                failCount++;
+                failMsg.append(I18nUtil.getString("jobinfo_field_id")).append("(").append(id).append(")：").append(result.getMsg()).append("；");
+            }
+        }
+
+        String resultMsg = String.format("批量删除完成，成功：%d，失败：%d", successCount, failCount);
+        if (failCount > 0) {
+            resultMsg += "，失败详情：" + failMsg.toString();
+        }
+        return new ReturnT<>(ReturnT.SUCCESS_CODE, resultMsg);
+    }
 
     @Override
     public ReturnT<String> batchAdd(DataXBatchJsonBuildDto dto) throws IOException {
