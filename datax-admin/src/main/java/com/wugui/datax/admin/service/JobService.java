@@ -27,7 +27,7 @@ public interface JobService {
      * @param userId
      * @return
      */
-    Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String glueType, int userId,Integer[] projectIds);
+    Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String glueType, int userId, Integer[] projectIds, int lastHandleCode);
 
     List<JobInfo> list();
 
@@ -99,6 +99,13 @@ public interface JobService {
      * @return
      */
     ReturnT<String> batchStart(List<Integer> ids);
+
+    /**
+     * 批量停止任务
+     * @param ids 任务ID列表
+     * @return
+     */
+    ReturnT<String> batchStop(List<Integer> ids);
 
     /**
      * 批量删除任务

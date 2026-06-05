@@ -71,11 +71,11 @@ public class JobServiceImpl implements JobService {
     private DataxJsonService dataxJsonService;
 
     @Override
-    public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String glueType, int userId, Integer[] projectIds) {
+    public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String glueType, int userId, Integer[] projectIds, int lastHandleCode) {
 
         // page list
-        List<JobInfo> list = jobInfoMapper.pageList(start, length, jobGroup, triggerStatus, jobDesc, glueType, userId, projectIds);
-        int list_count = jobInfoMapper.pageListCount(start, length, jobGroup, triggerStatus, jobDesc, glueType, userId, projectIds);
+        List<JobInfo> list = jobInfoMapper.pageList(start, length, jobGroup, triggerStatus, jobDesc, glueType, userId, projectIds, lastHandleCode);
+        int list_count = jobInfoMapper.pageListCount(start, length, jobGroup, triggerStatus, jobDesc, glueType, userId, projectIds, lastHandleCode);
 
         // package result
         Map<String, Object> maps = new HashMap<>();
@@ -439,6 +439,33 @@ public class JobServiceImpl implements JobService {
         }
 
         String resultMsg = String.format("批量启动完成，成功：%d，失败：%d", successCount, failCount);
+        if (failCount > 0) {
+            resultMsg += "，失败详情：" + failMsg.toString();
+        }
+        return new ReturnT<>(ReturnT.SUCCESS_CODE, resultMsg);
+    }
+
+    @Override
+    public ReturnT<String> batchStop(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("system_please_choose") + I18nUtil.getString("jobinfo_field_id"));
+        }
+
+        int successCount = 0;
+        int failCount = 0;
+        StringBuilder failMsg = new StringBuilder();
+
+        for (Integer id : ids) {
+            ReturnT<String> result = stop(id);
+            if (ReturnT.SUCCESS_CODE == result.getCode()) {
+                successCount++;
+            } else {
+                failCount++;
+                failMsg.append(I18nUtil.getString("jobinfo_field_id")).append("(").append(id).append(")：").append(result.getMsg()).append("；");
+            }
+        }
+
+        String resultMsg = String.format("批量停止完成，成功：%d，失败：%d", successCount, failCount);
         if (failCount > 0) {
             resultMsg += "，失败详情：" + failMsg.toString();
         }
