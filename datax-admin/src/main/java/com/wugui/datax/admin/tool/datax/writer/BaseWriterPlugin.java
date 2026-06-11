@@ -1,5 +1,9 @@
 package com.wugui.datax.admin.tool.datax.writer;
 
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.wugui.datatx.core.util.Constants;
@@ -9,11 +13,8 @@ import com.wugui.datax.admin.tool.pojo.DataxHbasePojo;
 import com.wugui.datax.admin.tool.pojo.DataxHivePojo;
 import com.wugui.datax.admin.tool.pojo.DataxMongoDBPojo;
 import com.wugui.datax.admin.tool.pojo.DataxRdbmsPojo;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * datax writer base
@@ -30,8 +31,10 @@ public abstract class BaseWriterPlugin extends BaseDataxPlugin {
         writerObj.put("name", getName());
 
         Map<String, Object> parameterObj = Maps.newLinkedHashMap();
-//        parameterObj.put("writeMode", "insert");
         JobDatasource jobDatasource = plugin.getJobDatasource();
+        if (supportWriteMode(jobDatasource)) {
+            parameterObj.put("writeMode", StringUtils.defaultIfBlank(plugin.getWriteMode(), "insert"));
+        }
         parameterObj.put("username", jobDatasource.getJdbcUsername());
         parameterObj.put("password", jobDatasource.getJdbcPassword());
         parameterObj.put("column", plugin.getRdbmsColumns());
@@ -46,6 +49,13 @@ public abstract class BaseWriterPlugin extends BaseDataxPlugin {
         writerObj.put("parameter", parameterObj);
 
         return writerObj;
+    }
+
+    /**
+     * 仅在底层 DataX writer 已明确支持时，才向 json 中透传 writeMode。
+     */
+    protected boolean supportWriteMode(JobDatasource jobDatasource) {
+        return jobDatasource != null && "mysql".equalsIgnoreCase(jobDatasource.getDatasource());
     }
 
     private String[] splitSql(String sql) {

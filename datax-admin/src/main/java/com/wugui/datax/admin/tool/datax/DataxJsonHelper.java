@@ -318,6 +318,7 @@ public class DataxJsonHelper implements DataxJsonInterface {
         dataxPluginPojo.setJobDatasource(writerDatasource);
         dataxPluginPojo.setTables(writerTables);
         dataxPluginPojo.setRdbmsColumns(writerColumns);
+        dataxPluginPojo.setWriteMode(rdbmsWriterDto.getWriteMode());
         dataxPluginPojo.setPreSql(rdbmsWriterDto.getPreSql());
         dataxPluginPojo.setPostSql(rdbmsWriterDto.getPostSql());
         return writerPlugin.build(dataxPluginPojo);

@@ -37,6 +37,11 @@ public class DataxRdbmsPojo {
     private String querySql;
 
     /**
+     * 写入模式，仅在目标 writer 支持时透传到 DataX
+     */
+    private String writeMode;
+
+    /**
      * preSql 属性
      */
     private String preSql;

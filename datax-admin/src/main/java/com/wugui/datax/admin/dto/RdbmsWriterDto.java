@@ -15,6 +15,11 @@ import java.io.Serializable;
 @Data
 public class RdbmsWriterDto implements Serializable {
 
+    /**
+     * RDBMS 写入模式，仅在底层 DataX writer 支持时生效
+     */
+    private String writeMode;
+
     private String preSql;
 
     private String postSql;
