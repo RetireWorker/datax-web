@@ -155,4 +155,13 @@ public class JobInfoController extends BaseController{
     public ReturnT<String> batchStop(@RequestBody List<Integer> ids) {
         return jobService.batchStop(ids);
     }
+
+    @PostMapping("/batchTrigger")
+    @ApiOperation("批量执行一次任务")
+    public ReturnT<String> batchTrigger(@RequestBody List<Integer> ids) {
+        for (Integer id : ids) {
+            JobTriggerPoolHelper.trigger(id, TriggerTypeEnum.MANUAL, -1, null, "");
+        }
+        return new ReturnT<>(ReturnT.SUCCESS_CODE, "批量执行任务完成，共 " + ids.size() + " 个任务已加入执行队列");
+    }
 }
