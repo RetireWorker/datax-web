@@ -24,6 +24,17 @@ public class PostgresqlDatabaseMeta extends BaseDatabaseMeta implements Database
     }
 
     @Override
+    public String getSQLQueryFields(String tableName) {
+        // PostgreSQL 标识符默认折为小写，大写表名需要加双引号保留原始大小写
+        return "SELECT * FROM \"" + tableName.replace(".", "\".\"") + "\" where 1=0";
+    }
+
+    @Override
+    public String getMaxId(String tableName, String primaryKey) {
+        return String.format("select max(%s) from \"%s\"", primaryKey, tableName.replace(".", "\".\""));
+    }
+
+    @Override
     public String getSQLQueryPrimaryKey() {
         return "select column_name from information_schema.columns where table_schema='public' and table_name='tb_cis_patient_info' and is_identity = 'YES'";
     }
