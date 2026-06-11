@@ -1,5 +1,13 @@
 package com.wugui.datax.admin.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import com.wugui.datatx.core.biz.model.ReturnT;
 import com.wugui.datatx.core.enums.RegistryConfig;
 import com.wugui.datax.admin.core.util.I18nUtil;
@@ -8,13 +16,18 @@ import com.wugui.datax.admin.entity.JobRegistry;
 import com.wugui.datax.admin.mapper.JobGroupMapper;
 import com.wugui.datax.admin.mapper.JobInfoMapper;
 import com.wugui.datax.admin.mapper.JobRegistryMapper;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import java.util.*;
 
 /**
  * Created by jingwk on 2019/11/17
@@ -137,7 +150,7 @@ public class JobGroupController {
     public ReturnT<String> remove(int id) {
 
         // valid
-        int count = jobInfoMapper.pageListCount(0, 10, id, -1, null, null, 0,null);
+        int count = jobInfoMapper.pageListCount(0, 10, id, -1, null, null, 0, null, -1);
         if (count > 0) {
             return new ReturnT<>(500, I18nUtil.getString("jobgroup_del_limit_0"));
         }
