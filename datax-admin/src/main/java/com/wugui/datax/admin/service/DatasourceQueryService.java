@@ -1,5 +1,7 @@
 package com.wugui.datax.admin.service;
 
+import com.wugui.datax.admin.tool.database.ColumnInfo;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -43,6 +45,15 @@ public interface DatasourceQueryService {
      * @return
      */
     List<String> getColumns(Long id, String tableName) throws IOException;
+
+    /**
+     * 根据数据源id、表名获取字段详细信息（名称、类型、注释）
+     *
+     * @param id 数据源id
+     * @param tableName 表名
+     * @return 字段详细信息列表
+     */
+    List<ColumnInfo> getColumnsDetail(Long id, String tableName) throws IOException;
 
     /**
      * 根据 sql 语句获取字段

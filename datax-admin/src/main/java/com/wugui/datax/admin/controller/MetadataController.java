@@ -2,6 +2,7 @@ package com.wugui.datax.admin.controller;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import com.wugui.datax.admin.service.DatasourceQueryService;
+import com.wugui.datax.admin.tool.database.ColumnInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,19 @@ public class MetadataController extends BaseController {
     @ApiOperation("根据数据源id和表名获取所有字段")
     public R<List<String>> getColumns(Long datasourceId, String tableName) throws IOException {
         return success(datasourceQueryService.getColumns(datasourceId, tableName));
+    }
+
+    /**
+     * 根据数据源id和表名获取字段详细信息（名称、类型、注释）
+     *
+     * @param datasourceId 数据源id
+     * @param tableName    表名
+     * @return 字段详细信息列表
+     */
+    @GetMapping("/getColumnsDetail")
+    @ApiOperation("根据数据源id和表名获取字段详细信息")
+    public R<List<ColumnInfo>> getColumnsDetail(Long datasourceId, String tableName) throws IOException {
+        return success(datasourceQueryService.getColumnsDetail(datasourceId, tableName));
     }
 
     /**
